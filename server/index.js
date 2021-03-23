@@ -23,11 +23,9 @@ function accept(req, res) {
 
 function onConnect(ws) {
   ws.on('message', function (message) {
-    let name = message.match(/([\p{Alpha}\p{M}\p{Nd}\p{Pc}\p{Join_C}]+)$/gu) || "Guest";
-    ws.send(`Hello from server, ${name}!`);
-
-    setTimeout(() => ws.close(1000, "Bye!"), 5000);
+    ws.send(`Hello from server, ${message}!`);
   });
+
 }
 
 server.listen(port);
