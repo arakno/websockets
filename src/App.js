@@ -4,31 +4,45 @@ import './App.css';
 class App extends Component {
   constructor(props){
     super(props)
-
+    this.port = 8080;
     this.state = {
       msg: ''
-    }
-    this.port = 8080
+    };
   }
 
   componentDidMount(){
-    this.connectWS()
+    this.connectWS();
   }
 
   connectWS = () => {
     const ws = new WebSocket(`ws://localhost:${this.port}/`);
+
     ws.onopen = () => {
         console.log('WebSocket Client Connected');
         ws.send('Hi this is web client.');
     };
-    ws.onmessage = (e) => {
-      console.log("Received: '" + e.data + "'");
-      this.setState({msg:e.data})
+
+    ws.onmessage = (evt) => {
+      console.log("Received: '" + evt.data + "'");
+      this.setState({ msg: evt.data });
     };
+    
+    ws.onclose = (evt) => {
+      if (evt.wasClean) {
+        console.log(`[close] Connection closed cleanly, code=${evt.code} reason=${evt.reason}`);
+      } else {
+        console.error(`[close] Connection died : ${evt.code}`);
+      }
+    };
+
+    ws.onerror = (error) => {
+      console.error(`[error] ${error.message}`);
+    };
+
   }
 
-  onChange = (e) => {
-    this.setState({msg:e.target.value});
+  onChange = (evt) => {
+    this.setState({msg:evt.target.value});
   }
 
   render() {
