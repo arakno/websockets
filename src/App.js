@@ -15,14 +15,15 @@ class App extends Component {
     this.connectWS()
   }
 
-  connectWS() {
+  connectWS = () => {
     const ws = new WebSocket(`ws://localhost:${this.port}/`);
-    ws.onopen = function() {
+    ws.onopen = () => {
         console.log('WebSocket Client Connected');
         ws.send('Hi this is web client.');
     };
-    ws.onmessage = function(e) {
+    ws.onmessage = (e) => {
       console.log("Received: '" + e.data + "'");
+      this.setState({msg:e.data})
     };
   }
 
