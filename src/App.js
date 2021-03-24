@@ -6,7 +6,8 @@ class App extends Component {
     super(props)
     this.port = 8080;
     this.state = {
-      msg: ''
+      msg: '',
+      rx: ''
     };
   }
 
@@ -19,12 +20,12 @@ class App extends Component {
 
     ws.onopen = () => {
         console.log('WebSocket Client Connected');
-        ws.send('Hi this is web client.');
+        ws.send('[open] Hi from client.');
     };
 
     ws.onmessage = (evt) => {
-      console.log("Received: '" + evt.data + "'");
-      this.setState({ msg: evt.data });
+      console.log("[evt] Received: '" + evt.data + "'");
+      this.setState({ rx: evt.data });
     };
     
     ws.onclose = (evt) => {
@@ -41,6 +42,11 @@ class App extends Component {
 
   }
 
+  getVideoMetadata() {
+    let msg, timestamp, duration;
+    
+  }
+
   onChange = (evt) => {
     this.setState({msg:evt.target.value});
   }
@@ -51,6 +57,7 @@ class App extends Component {
         <header className="App-header">
           <video preload="metadata" controls src="Big_Buck_Bunny_1080_10s_5MB.mp4"></video>
           <input type="text" value={ this.state.msg } onChange={ this.onChange } />
+          <input type="text" value={ this.state.rx } />
         </header>
       </div>
     );
