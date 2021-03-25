@@ -15,13 +15,13 @@ class App extends Component {
   componentDidMount(){
     this.initializetWS();
     const vdo = this.appVideo.current;
-    vdo.addEventListener('loadedmetadata', this.getVideoMetadata)
+    vdo.addEventListener('loadedmetadata', this.getVideoMetadata);
   }
 
   initializetWS = () => {
     this.ws.onopen = (evt) => {
         console.log(`[open] WebSocket Client Connected ${evt}`);
-        this.ws.send(`Hi from client.`);
+        this.ws.send(`Connected!`);
     };
 
     this.ws.onmessage = (evt) => {
@@ -43,7 +43,8 @@ class App extends Component {
   }
 
   getVideoMetadata = () => {
-    return this.duration
+    const vdo = this.appVideo.current;
+    return vdo.duration
   }
 
   onChange = (evt) => {
