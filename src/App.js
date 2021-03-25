@@ -1,10 +1,11 @@
-import { Component } from 'react'
+import React, { Component } from 'react'
 import './App.css';
 
 class App extends Component {
   constructor(props){
     super(props)
-    this.port = 8080;
+    this.ws = new WebSocket(`ws://localhost:8080/`);
+    this.appVideo = React.createRef();
     this.state = {
       msg: '',
       rx: ''
@@ -12,23 +13,23 @@ class App extends Component {
   }
 
   componentDidMount(){
-    this.connectWS();
+    this.initializetWS();
+    const vdo = this.appVideo.current;
+    vdo.addEventListener('loadedmetadata', this.getVideoMetadata)
   }
 
-  connectWS = () => {
-    const ws = new WebSocket(`ws://localhost:${this.port}/`);
-
-    ws.onopen = () => {
-        console.log('WebSocket Client Connected');
-        ws.send('[open] Hi from client.');
+  initializetWS = () => {
+    this.ws.onopen = (evt) => {
+        console.log(`[open] WebSocket Client Connected ${evt}`);
+        this.ws.send(`Hi from client.`);
     };
 
-    ws.onmessage = (evt) => {
-      console.log("[evt] Received: '" + evt.data + "'");
+    this.ws.onmessage = (evt) => {
+      console.log("[message] Received: '" + evt.data + "'");
       this.setState({ rx: evt.data });
     };
     
-    ws.onclose = (evt) => {
+    this.ws.onclose = (evt) => {
       if (evt.wasClean) {
         console.log(`[close] Connection closed cleanly, code=${evt.code} reason=${evt.reason}`);
       } else {
@@ -36,29 +37,34 @@ class App extends Component {
       }
     };
 
-    ws.onerror = (error) => {
+    this.ws.onerror = (error) => {
       console.error(`[error] ${error.message}`);
     };
-
   }
 
-  getVideoMetadata() {
-    let msg, timestamp, duration;
-    
+  getVideoMetadata = () => {
+    return this.duration
   }
 
   onChange = (evt) => {
-    this.setState({msg:evt.target.value});
+    this.setState({ msg: evt.target.value });
+    console.log(`[message] from client. ${this.getVideoMetadata()}`)
+    this.ws.send(`Duration: ${this.getVideoMetadata()}, Message: ${this.state.msg}`);
   }
 
   render() {
     return (
       <div className="App">
         <header className="App-header">
-          <video preload="metadata" controls src="Big_Buck_Bunny_1080_10s_5MB.mp4"></video>
-          <input type="text" value={ this.state.msg } onChange={ this.onChange } />
-          <input type="text" value={ this.state.rx } />
+          <label htmlFor="input-msg">Send Message:</label>
+          <input className="input-msg" name="input-msg" type="text" value={ this.state.msg } onChange={ this.onChange } />
+
+          <h2>Receive Message: </h2>
+          <div className="speech-bubble" type="text">{ this.state.rx }</div>
         </header>
+        <main>
+          <video ref={this.appVideo} className="app-video" preload="metadata" controls src="Big_Buck_Bunny_1080_10s_5MB.mp4"></video>
+        </main>
       </div>
     );
   }

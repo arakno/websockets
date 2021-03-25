@@ -21,4 +21,10 @@ Please create a new git repository with your project and send us a link to it. A
 TODO: 
 - add .env for ports etc
 - display video messages from track vtt
+- Assign random color to speech bubbles
 - 
+
+
+Struggles:
+- getting refs from DOM nodes.
+- Attaching evt listeners

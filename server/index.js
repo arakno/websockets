@@ -11,7 +11,6 @@ function accept(req, res) {
     res.end();
     return;
   }
-
   // can be Connection: keep-alive, Upgrade
   if (!req.headers.connection.match(/\bupgrade\b/i)) {
     res.end();
@@ -22,10 +21,19 @@ function accept(req, res) {
 }
 
 function onConnect(ws) {
-  ws.on('message', function (message) {
-    ws.send(`Hello from server, ${message}!`);
-  });
+    console.log('> Connected');
+    ws.on('message', function (message) {
+      ws.send(`Hello from server, ${message}!`);
+      sendAll(message);
+    });
+}
 
+function sendAll (message) {
+  wss.clients.forEach((client) => {
+    if (client !== ws && client.readyState === 'OPEN') {
+      client.send("> Broadcast: " + message);
+    }
+  });
 }
 
 server.listen(port);
