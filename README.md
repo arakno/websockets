@@ -18,13 +18,14 @@ If you're struggling, take notes about areas you are having trouble with, propos
 
 Please create a new git repository with your project and send us a link to it. Alongside this, please provide a screen recorded video or brief text-documented overview of your development process where you describe the process behind building the app and run through any thoughts you had, decisions you made, concerns that came up etc.
 
+
 TODO: 
 - add .env for ports etc
 - display video messages from track vtt
-- Assign random color to speech bubbles
-- 
-
+- Assign random color and position to speech bubbles
+- Add component for speech b
 
 Struggles:
 - getting refs from DOM nodes.
 - Attaching evt listeners
+- Broadcasting to all clients
